@@ -54,7 +54,7 @@ public class NotificationEventListener {
  
     // ── Escucha: Pago procesado (exitoso o rechazado) ─────────────────────
     @EventListener
-    @Async
+    @Async("notificationExecutor")
     public void onPaymentProcessed(PaymentProcessedEvent event) {
         log.info("[NotificationListener] Pago procesado para factura: {} | Exitoso: {}",
                 event.getInvoiceNumber(), event.isSuccess());
