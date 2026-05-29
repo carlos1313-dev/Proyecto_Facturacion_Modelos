@@ -31,12 +31,21 @@ public class EmailNotificationDecorator extends NotificationDecorator {
  
     @Override
     protected void doSend(NotificationContext context) {
-        log.info("[EmailDecorator] Enviando email a: {}", context.getClientEmail());
- 
+        String email = context.getClientEmail();
+
+        if (email == null || email.isBlank()) {
+            log.warn("[EmailDecorator] Cliente sin email registrado, omitiendo envío. invoiceId: {}",
+                    context.getInvoiceId());
+            updateStatus(context, NotificationStatus.FAILED);
+            return;
+        }
+
+        log.info("[EmailDecorator] Enviando email a: {}", email);
+
         try {
             SimpleMailMessage mail = new SimpleMailMessage();
             mail.setFrom(fromAddress);
-            mail.setTo(context.getClientEmail());
+            mail.setTo(email);
             mail.setSubject(context.getSubject());
             mail.setText(context.getMessage());
  
