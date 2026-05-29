@@ -30,7 +30,7 @@ public class NotificationEventListener {
  
     // ── Escucha: Factura generada ─────────────────────────────────────────
     @EventListener
-    @Async
+    @Async("notificationExecutor")
     public void onInvoiceGenerated(InvoiceGeneratedEvent event) {
         log.info("[NotificationListener] Factura generada recibida: {}", event.getInvoiceNumber());
  
