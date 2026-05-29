@@ -4,8 +4,9 @@ import com.twilio.Twilio;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
- 
+
 /**
  * Inicializa el SDK de Twilio con las credenciales del proyecto.
  * Se ejecuta una sola vez al levantar el contexto de Spring.
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
  *   twilio.phone-number
  */
 @Configuration
+@ConditionalOnProperty(prefix = "twilio", name = {"account-sid", "auth-token"})
 @Slf4j
 public class TwilioConfig {
  
