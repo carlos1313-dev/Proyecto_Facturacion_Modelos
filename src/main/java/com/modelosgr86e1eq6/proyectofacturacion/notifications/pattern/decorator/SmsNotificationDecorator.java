@@ -61,6 +61,9 @@ public class SmsNotificationDecorator extends NotificationDecorator {
     // El SMS es más corto que el email — se recorta el mensaje
     private String buildSmsText(NotificationContext context) {
         String msg = context.getMessage();
+        if (msg == null) {
+            return "";
+        }
         return msg.length() > 160 ? msg.substring(0, 157) + "..." : msg;
     }
 }
