@@ -11,19 +11,18 @@ on:
 
 jobs:
   sonarcloud:
-    name: SonarCloud
+    name: SonarCloud Analysis
     runs-on: ubuntu-latest
-
-    # Agrega el servicio de PostgreSQL
+    
     services:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: facturacion_db          
-          POSTGRES_USER: postgres              
-          POSTGRES_PASSWORD: cesr1311   
+          POSTGRES_DB: facturacion_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: cesr1311
         ports:
-          - 5433:5432  # Mapea puerto 5433 del host al 5432 del contenedor
+          - 5433:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -35,14 +34,24 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
       
-      - name: Build and analyze
+      - name: Build, test and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify sonar:sonar -Dsonar.projectKey=TU_PROJECT_KEY -Dsonar.organization=TU_ORGANIZACION
+          DATABASE_URL: jdbc:postgresql://localhost:5433/facturacion_db
+          DATABASE_USERNAME: postgres
+          DATABASE_PASSWORD: cesr1311
+        run: |
+          mvn -B clean verify sonar:sonar \
+            -Dsonar.projectKey=carlos1313-dev_Proyecto_Facturacion_Modelos \
+            -Dsonar.organization=carlos1313-dev \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
